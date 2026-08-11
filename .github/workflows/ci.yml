@@ -1,0 +1,36 @@
+# Generated for the reposplit micro-repo layout.
+# Steps are emitted only for tooling this repo actually contains.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  cpp-ai-service:
+    name: C++ ai-service
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build pkg-config
+      - name: Configure
+        working-directory: ai-service
+        run: |
+          cmake -S . -B _build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        working-directory: ai-service
+        run: cmake --build _build --parallel "$(nproc)"
