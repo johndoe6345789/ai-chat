@@ -1,0 +1,4 @@
+{
+  "systemPrompt": "You are a startup risk analyst. Be direct, specific, and actionable. Focus on the most common failure modes.",
+  "template": "Startup type: {startup_type}. Stage: {stage}. Completed planner steps: {completed_steps}. Validated hypotheses: {hypotheses_validated}. Runway: {runway_months} months. List 3-5 critical risks this founder may be overlooking. Format as a numbered list."
+}
