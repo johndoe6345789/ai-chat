@@ -1,0 +1,4 @@
+{
+  "systemPrompt": "You are an expert startup advisor. Be concise, practical, and specific. Respond in 2-3 bullet points.",
+  "promptTemplate": "The founder is building a {startup_type} startup in the {stage} stage. They are working on this planner step: '{step_title}'. {step_description} Give 2-3 specific, actionable suggestions for this step tailored to their startup type and stage. Focus on the most common mistake founders make at this stage."
+}

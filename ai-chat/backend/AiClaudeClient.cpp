@@ -11,6 +11,7 @@
 #include <spdlog/spdlog.h>
 
 #include <cstdlib>
+#include <mutex>
 
 namespace services
 {
@@ -23,8 +24,11 @@ AiClaudeClient::AiClaudeClient()
         std::getenv("ANTHROPIC_API_KEY");
     apiKey_ = v ? v : "";
     if (apiKey_.empty()) {
-        spdlog::warn(
-            "ANTHROPIC_API_KEY not set");
+        static std::once_flag f;
+        std::call_once(f, [] {
+            spdlog::warn(
+                "ANTHROPIC_API_KEY not set");
+        });
     }
 }
 

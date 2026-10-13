@@ -1,0 +1,6 @@
+{
+  "pitch_deck": "Generate a 12-slide pitch deck outline for a {startup_type} startup called '{startup_name}' in the {stage} stage. Include: Problem, Solution, Market Size, Business Model, Traction, Team, Financials, Ask. Be specific and compelling.",
+  "investor_update": "Write a one-page monthly investor update for {startup_name}, a {startup_type} startup. Include: Highlights, Key Metrics, Challenges, Next Month Goals, Asks. Be concise and honest.",
+  "nda": "Generate a short mutual NDA template for {startup_name}. Include: Parties, Confidential Information definition, Obligations, Duration (2 years), Governing Law (England & Wales). Mark variable fields in [BRACKETS].",
+  "job_description": "Write a job description for an early hire at {startup_name}, a {startup_type} startup. Include: Role Summary, What You'll Do, What We're Looking For, Why Join Us (equity note). Keep it energetic and honest about the startup stage."
+}

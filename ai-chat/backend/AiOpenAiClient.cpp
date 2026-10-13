@@ -12,6 +12,7 @@
 #include <spdlog/spdlog.h>
 
 #include <cstdlib>
+#include <mutex>
 
 namespace services
 {
@@ -22,8 +23,12 @@ AiOpenAiClient::AiOpenAiClient()
     const char* v =
         std::getenv("OPENAI_API_KEY");
     apiKey_ = v ? v : "";
-    if (apiKey_.empty())
-        spdlog::warn("OPENAI_API_KEY not set");
+    if (apiKey_.empty()) {
+        static std::once_flag f;
+        std::call_once(f, [] {
+            spdlog::warn("OPENAI_API_KEY not set");
+        });
+    }
 }
 
 void AiOpenAiClient::call(
