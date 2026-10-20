@@ -29,6 +29,9 @@ class AiOpenAiClient
     AiOpenAiClient();
     ~AiOpenAiClient() = default;
 
+    /** @brief Address of the OpenAI-compatible server (OPENAI_BASE_URL). */
+    const std::string& baseUrl() const { return baseUrl_; }
+
     /**
      * @brief Send @p messages to OpenAI and return the reply.
      *
@@ -59,7 +62,16 @@ class AiOpenAiClient
 
   private:
     std::string apiKey_;
+    /** Server to call: OPENAI_BASE_URL, e.g. a local OpenAI-compatible
+     *  server such as Ollama. Defaults to api.openai.com. */
+    std::string baseUrl_;
+    /** Model used when the caller names none (OPENAI_MODEL). */
+    std::string model_;
+    /** Seconds to wait for a reply (OPENAI_TIMEOUT_S): a local model
+     *  on a CPU is much slower than the hosted API. */
+    double timeoutS_ = 180;
 
+    static constexpr const char* kDefaultBase = "https://api.openai.com";
     static constexpr const char* kModel =
         "gpt-4o-mini";
     static constexpr std::int32_t kMaxTokens = 1024;
