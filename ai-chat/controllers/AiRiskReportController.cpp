@@ -33,7 +33,7 @@ void AiRiskReportController::report(
         req->bodyData(),
         req->bodyData() + req->bodyLength(),
         nullptr, false);
-    if (body.is_discarded()) {
+    if (body.is_discarded() || !body.is_object()) {
         cb(::utils::jsonError(
             drogon::k400BadRequest,
             "Invalid JSON body"));
