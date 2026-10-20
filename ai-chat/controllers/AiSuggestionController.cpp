@@ -31,16 +31,14 @@ void AiSuggestionController::suggest(
         req->bodyData() + req->bodyLength(),
         nullptr, false);
 
-    if (body.is_discarded()
-        || !body.contains("step_title")
-        || body["step_title"].get<std::string>().empty()) {
+    if (body.is_discarded() || !body.is_object()
+        || strOr(body, "step_title", "").empty()) {
         cb(::utils::jsonError(drogon::k400BadRequest,
             "step_title field required", "SUGG_001"));
         return;
     }
 
-    const auto stepTitle =
-        body["step_title"].get<std::string>();
+    const auto stepTitle = strOr(body, "step_title", "");
     const auto stepDesc  = strOr(body, "step_description", "");
     const auto stype     = strOr(body, "startup_type", "startup");
     const auto stage     = strOr(body, "stage", "early");

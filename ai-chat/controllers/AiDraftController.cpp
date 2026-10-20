@@ -27,16 +27,15 @@ void AiDraftController::draft(
         req->bodyData(),
         req->bodyData() + req->bodyLength(),
         nullptr, false);
-    if (body.is_discarded()
-        || !body.contains("document_type")) {
+    if (body.is_discarded() || !body.is_object()
+        || strOr(body, "document_type", "").empty()) {
         cb(::utils::jsonError(
             drogon::k400BadRequest,
             "document_type required",
             "DRAFT_001"));
         return;
     }
-    const auto docType =
-        body["document_type"].get<std::string>();
+    const auto docType = strOr(body, "document_type", "");
     auto it = kDraftTemplates.find(docType);
     if (it == kDraftTemplates.end()) {
         cb(::utils::jsonError(
