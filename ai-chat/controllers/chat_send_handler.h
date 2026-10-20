@@ -4,6 +4,7 @@
  * @brief Request parsing helpers for ChatController.
  */
 
+#include "ai_json.h"
 #include "drogon-host/backend/utils/JsonResponse.h"
 
 #include <nlohmann/json.hpp>
@@ -49,7 +50,7 @@ inline auto parseChatRequest(
     input.message =
         body["message"].get<std::string>();
     input.providerStr =
-        body.value("provider", "claude");
+        strOr(body, "provider", defaultProvider());
 
     if (input.message.empty()) {
         return std::nullopt;

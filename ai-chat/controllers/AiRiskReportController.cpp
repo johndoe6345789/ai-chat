@@ -9,6 +9,7 @@
 #include "api-keys/backend/ApiKeyService.h"
 #include "drogon-host/backend/utils/JsonResponse.h"
 
+#include "ai_json.h"
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
@@ -32,7 +33,7 @@ void AiRiskReportController::report(
         req->bodyData(),
         req->bodyData() + req->bodyLength(),
         nullptr, false);
-    if (body.is_discarded()) {
+    if (body.is_discarded() || !body.is_object()) {
         cb(::utils::jsonError(
             drogon::k400BadRequest,
             "Invalid JSON body"));
@@ -40,11 +41,11 @@ void AiRiskReportController::report(
     }
 
     const auto provider = services::parseProvider(
-        body.value("provider", "claude"));
+        strOr(body, "provider", defaultProvider()));
     const auto type =
-        body.value("startup_type", "startup");
+        strOr(body, "startup_type", "startup");
     const auto stage =
-        body.value("stage", "early");
+        strOr(body, "stage", "early");
 
     services::ApiKeyService::resolve(
         userId, provider,
@@ -72,7 +73,7 @@ void AiRiskReportController::report(
                         {"risks",
                          r.value("suggestion",
                                  "")},
-                        {"generated_at", "now"},
+                        {"generated_at", isoNow()},
                     }));
                 },
                 [cb](drogon::HttpStatusCode s,

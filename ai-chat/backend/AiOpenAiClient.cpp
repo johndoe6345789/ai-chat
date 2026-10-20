@@ -23,6 +23,15 @@ AiOpenAiClient::AiOpenAiClient()
     const char* v =
         std::getenv("OPENAI_API_KEY");
     apiKey_ = v ? v : "";
+    const char* base = std::getenv("OPENAI_BASE_URL");
+    baseUrl_ = base && *base ? base : kDefaultBase;
+    while (!baseUrl_.empty() && baseUrl_.back() == '/') baseUrl_.pop_back();
+    const char* mdl = std::getenv("OPENAI_MODEL");
+    model_ = mdl && *mdl ? mdl : kModel;
+    if (const char* t = std::getenv("OPENAI_TIMEOUT_S")) {
+        const double s = std::atof(t);
+        if (s > 0) timeoutS_ = s;
+    }
     if (apiKey_.empty()) {
         static std::once_flag f;
         std::call_once(f, [] {
@@ -54,11 +63,12 @@ void AiOpenAiClient::call(
                 "OpenAI API key not configured");
         return;
     }
-    const auto mdl =
-        model.empty() ? kModel : model.c_str();
+    // A caller's chosen model name only means something to the hosted
+    // API; another server has its own models, so use the configured one.
+    const std::string mdl =
+        (!model.empty() && baseUrl_ == kDefaultBase) ? model : model_;
 
-    auto client = HttpClient::newHttpClient(
-        "https://api.openai.com");
+    auto client = HttpClient::newHttpClient(baseUrl_);
     auto req = HttpRequest::newHttpRequest();
     req->setMethod(Post);
     req->setPath("/v1/chat/completions");
@@ -73,7 +83,7 @@ void AiOpenAiClient::call(
 
     client->sendRequest(
         req,
-        [onSuccess, onError](
+        [onSuccess, onError, mdl](
             ReqResult result,
             const HttpResponsePtr& resp) {
             if (result != ReqResult::Ok
@@ -86,9 +96,10 @@ void AiOpenAiClient::call(
                 return;
             }
             detail::parseOpenAiResponse(
-                resp, kModel,
+                resp, mdl.c_str(),
                 onSuccess, onError);
-        });
+        },
+        timeoutS_);
 }
 
 } // namespace services

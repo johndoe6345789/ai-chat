@@ -5,6 +5,8 @@
  *        AiRiskReportController.
  */
 
+#include "ai_json.h"
+
 #include <nlohmann/json.hpp>
 #include <format>
 #include <string>
@@ -25,14 +27,13 @@ using json = nlohmann::json;
     const json& b) -> std::string
 {
     const auto type =
-        b.value("startup_type", "startup");
+        strOr(b, "startup_type", "startup");
     const auto stage =
-        b.value("stage", "early");
+        strOr(b, "stage", "early");
     const auto hyp =
-        b.value("hypotheses_validated",
-                std::int64_t{0});
+        intOr(b, "hypotheses_validated", 0);
     const auto burn =
-        b.value("burn_months", std::int64_t{0});
+        intOr(b, "burn_months", 0);
     const auto steps =
         b.contains("planner_completed_steps")
         ? static_cast<std::int64_t>(
