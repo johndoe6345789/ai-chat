@@ -8,6 +8,7 @@
 #include "api-keys/backend/ApiKeyService.h"
 #include "drogon-host/backend/utils/JsonResponse.h"
 
+#include "ai_json.h"
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
@@ -40,11 +41,11 @@ void AiSuggestionController::suggest(
 
     const auto stepTitle =
         body["step_title"].get<std::string>();
-    const auto stepDesc  = body.value("step_description", "");
-    const auto stype     = body.value("startup_type", "startup");
-    const auto stage     = body.value("stage", "early");
+    const auto stepDesc  = strOr(body, "step_description", "");
+    const auto stype     = strOr(body, "startup_type", "startup");
+    const auto stage     = strOr(body, "stage", "early");
     const auto provider  =
-        services::parseProvider(body.value("provider", "claude"));
+        services::parseProvider(strOr(body, "provider", defaultProvider()));
 
     spdlog::debug("AiSuggestionController user={}", userId);
 

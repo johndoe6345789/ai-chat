@@ -7,6 +7,7 @@
 #include "ai_draft_helpers.h"
 #include "ai_draft_dispatch.h"
 
+#include "ai_json.h"
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -45,13 +46,13 @@ void AiDraftController::draft(
         return;
     }
     const auto name =
-        body.value("startup_name", "your startup");
+        strOr(body, "startup_name", "your startup");
     const auto type =
-        body.value("startup_type", "startup");
+        strOr(body, "startup_type", "startup");
     const auto stage =
-        body.value("stage", "early");
+        strOr(body, "stage", "early");
     const auto provider = services::parseProvider(
-        body.value("provider", "claude"));
+        strOr(body, "provider", defaultProvider()));
     dispatchDraft(
         userId, docType, type, stage,
         provider,

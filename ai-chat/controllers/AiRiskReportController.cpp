@@ -9,6 +9,7 @@
 #include "api-keys/backend/ApiKeyService.h"
 #include "drogon-host/backend/utils/JsonResponse.h"
 
+#include "ai_json.h"
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
@@ -40,11 +41,11 @@ void AiRiskReportController::report(
     }
 
     const auto provider = services::parseProvider(
-        body.value("provider", "claude"));
+        strOr(body, "provider", defaultProvider()));
     const auto type =
-        body.value("startup_type", "startup");
+        strOr(body, "startup_type", "startup");
     const auto stage =
-        body.value("stage", "early");
+        strOr(body, "stage", "early");
 
     services::ApiKeyService::resolve(
         userId, provider,
