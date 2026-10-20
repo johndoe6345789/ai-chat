@@ -13,4 +13,8 @@ nextra_service(
     NAME nextra-ai
     DIRS
         ai-chat/backend
+        # The HTTP routes (/api/ai/*, /api/chat/*). They were never listed here, so the daemon
+        # answered every one of them with a 404. They look the caller's own API key up through api-keys.
+        ai-chat/controllers
+        api-keys/backend
 )
