@@ -9,8 +9,10 @@
  */
 
 #include <nlohmann/json.hpp>
+#include <chrono>
 #include <cstdint>
 #include <cstdlib>
+#include <format>
 #include <string>
 
 namespace controllers
@@ -34,6 +36,14 @@ namespace controllers
     const auto it = j.find(key);
     if (it == j.end() || !it->is_number()) return dflt;
     return it->get<std::int64_t>();
+}
+
+/** @brief The current time as ISO 8601 UTC (what the frontend parses). */
+[[nodiscard]] inline std::string isoNow()
+{
+    return std::format("{:%Y-%m-%dT%H:%M:%SZ}",
+        std::chrono::floor<std::chrono::seconds>(
+            std::chrono::system_clock::now()));
 }
 
 /**

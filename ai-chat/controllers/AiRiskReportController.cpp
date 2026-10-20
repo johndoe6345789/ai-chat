@@ -73,7 +73,7 @@ void AiRiskReportController::report(
                         {"risks",
                          r.value("suggestion",
                                  "")},
-                        {"generated_at", "now"},
+                        {"generated_at", isoNow()},
                     }));
                 },
                 [cb](drogon::HttpStatusCode s,
